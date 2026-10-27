@@ -1,0 +1,1464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MNMLST | m n m l s t : l a b</title>
+    <style>
+        :root {
+            --bg: #f4f3ef;
+            --bg-alt: #eae8e1;
+            --fg: #1a1a1a;
+            --fg-muted: #555555;
+            --border: #1a1a1a;
+            --font: Consolas, "Courier New", Courier, monospace;
+        }
+
+        [data-theme="dark"] {
+            --bg: #0d0e11;
+            --bg-alt: #16181d;
+            --fg: #e0ded7;
+            --fg-muted: #888888;
+            --border: #e0ded7;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: none;
+        }
+
+        ::selection {
+            background: var(--fg);
+            color: var(--bg);
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--fg);
+            font-family: var(--font);
+            line-height: 1.5;
+            font-size: 15px;
+            padding: 20px;
+            padding-bottom: 120px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .wrapper {
+            width: 100%;
+            max-width: 1000px;
+        }
+
+        /* --- Header & Navigation --- */
+        header {
+            border: 2px solid var(--border);
+            padding: 20px;
+            margin-bottom: 25px;
+            background: var(--bg);
+        }
+
+        .brand-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px dashed var(--border);
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .logo {
+            font-size: 1.3rem;
+            font-weight: bold;
+            letter-spacing: -0.5px;
+            text-transform: lowercase;
+        }
+
+        .logo span {
+            background: var(--fg);
+            color: var(--bg);
+            padding: 2px 6px;
+            margin-left: 6px;
+            font-size: 0.85rem;
+        }
+
+        .status-badge {
+            font-size: 0.8rem;
+            color: var(--fg-muted);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .top-toggle {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            color: var(--fg);
+            font-family: var(--font);
+            font-size: 0.75rem;
+            padding: 2px 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .top-toggle:hover {
+            background: var(--fg);
+            color: var(--bg);
+        }
+
+        nav {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            background: var(--bg);
+            border: 2px solid var(--border);
+            color: var(--fg);
+            font-family: var(--font);
+            font-size: 0.9rem;
+            padding: 8px 14px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: none;
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            background: var(--fg);
+            color: var(--bg);
+            transform: translate(-3px, -3px);
+            box-shadow: 3px 3px 0px var(--border);
+        }
+
+        /* --- View Container --- */
+        .view {
+            display: none;
+        }
+
+        .view.active {
+            display: block;
+        }
+
+        /* --- Terminal Log --- */
+        .terminal-box {
+            border: 2px solid var(--border);
+            padding: 15px 20px;
+            background: var(--bg-alt);
+            margin-bottom: 25px;
+            font-size: 0.85rem;
+            position: relative;
+        }
+
+        .terminal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px dashed var(--border);
+            padding-bottom: 8px;
+            margin-bottom: 10px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            color: var(--fg-muted);
+        }
+
+        .terminal-output {
+            max-height: 160px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            margin-bottom: 10px;
+        }
+
+        .terminal-input-line {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: bold;
+        }
+
+        .terminal-prompt {
+            color: var(--fg);
+        }
+
+        .terminal-input {
+            background: transparent;
+            border: none;
+            outline: none;
+            font-family: var(--font);
+            font-size: 0.85rem;
+            color: var(--fg);
+            flex: 1;
+            font-weight: bold;
+        }
+
+        .term-toggle-btn {
+            display: none;
+            border: 2px solid var(--border);
+            padding: 8px 14px;
+            background: var(--bg);
+            font-family: var(--font);
+            font-size: 0.85rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 25px;
+        }
+
+        .term-toggle-btn:hover {
+            background: var(--fg);
+            color: var(--bg);
+            transform: translate(-3px, -3px);
+            box-shadow: 3px 3px 0px var(--border);
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 8px;
+            height: 1em;
+            background: var(--fg);
+            vertical-align: bottom;
+            animation: blink 0.8s step-end infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* --- Grid & Cards --- */
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+
+        @media (min-width: 768px) {
+            .grid-2 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .card {
+            border: 2px solid var(--border);
+            padding: 25px;
+            background: var(--bg);
+            display: flex;
+            flex-direction: column;
+            transition: none;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .card:hover {
+            transform: translate(-6px, -6px);
+            box-shadow: 6px 6px 0px var(--border);
+            background: var(--fg);
+            color: var(--bg);
+        }
+
+        .card-tag {
+            align-self: flex-start;
+            border: 1px solid var(--border);
+            padding: 2px 8px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        .card:hover .card-tag {
+            border-color: var(--bg);
+            background: var(--bg);
+            color: var(--fg);
+        }
+
+        .card h2 {
+            font-size: 1.25rem;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .card p {
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+            color: inherit;
+        }
+
+        .ascii-art {
+            white-space: pre;
+            font-size: 0.8rem;
+            line-height: 1.1;
+            font-weight: bold;
+            margin: 15px 0;
+            text-align: center;
+        }
+
+        .spec-list {
+            list-style: none;
+            border-top: 2px dashed var(--border);
+            padding-top: 15px;
+            margin-top: auto;
+            font-size: 0.82rem;
+        }
+
+        .card:hover .spec-list {
+            border-top-color: var(--bg);
+        }
+
+        .spec-list li {
+            margin-bottom: 6px;
+        }
+
+        .spec-list li::before {
+            content: "+ ";
+        }
+
+        /* --- Manifesto & Banners --- */
+        .division-banner {
+            border: 2px solid var(--border);
+            padding: 25px;
+            margin-bottom: 25px;
+            background: var(--bg);
+            transition: none;
+        }
+
+        .division-banner:hover {
+            transform: translate(-4px, -4px);
+            box-shadow: 4px 4px 0px var(--border);
+        }
+
+        .division-banner h2 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .division-banner h2::before {
+            content: ":: ";
+        }
+
+        .mat-block {
+            border: 2px solid var(--border);
+            padding: 20px;
+            margin-bottom: 20px;
+            background: var(--bg);
+            transition: none;
+        }
+
+        .mat-block:hover {
+            transform: translate(-4px, -4px);
+            box-shadow: 4px 4px 0px var(--border);
+        }
+
+        /* --- RETRO ASCII CAT AGENT (KITTY_OS) --- */
+        .cat-widget-toggle {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: var(--fg);
+            color: var(--bg);
+            border: 2px solid var(--border);
+            padding: 10px 16px;
+            font-family: var(--font);
+            font-size: 0.85rem;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 99;
+            box-shadow: 4px 4px 0px var(--border);
+        }
+
+        .cat-widget-toggle:hover {
+            background: var(--bg);
+            color: var(--fg);
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px var(--border);
+        }
+
+        .cat-agent-window {
+            position: fixed;
+            bottom: 80px;
+            right: 25px;
+            width: 350px;
+            max-width: calc(100vw - 40px);
+            background: var(--bg);
+            border: 3px solid var(--border);
+            box-shadow: 8px 8px 0px var(--border);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .cat-agent-window.hidden {
+            display: none;
+        }
+
+        .cat-header {
+            background: var(--fg);
+            color: var(--bg);
+            padding: 8px 12px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cat-header-btn {
+            background: transparent;
+            border: none;
+            color: var(--bg);
+            font-family: var(--font);
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .cat-header-btn:hover {
+            text-decoration: underline;
+        }
+
+        .cat-display {
+            padding: 12px;
+            border-bottom: 2px dashed var(--border);
+            background: var(--bg-alt);
+            text-align: center;
+        }
+
+        .cat-ascii {
+            white-space: pre;
+            font-size: 0.75rem;
+            line-height: 1.1;
+            font-weight: bold;
+            color: var(--fg);
+        }
+
+        .cat-status {
+            font-size: 0.7rem;
+            color: var(--fg-muted);
+            margin-top: 5px;
+            text-transform: uppercase;
+        }
+
+        .cat-chat-history {
+            height: 180px;
+            overflow-y: auto;
+            padding: 10px;
+            font-size: 0.8rem;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .chat-msg {
+            padding: 6px 10px;
+            border: 1px solid var(--border);
+            word-wrap: break-word;
+        }
+
+        .chat-msg.cat {
+            background: var(--bg-alt);
+            align-self: flex-start;
+            border-left: 3px solid var(--fg);
+        }
+
+        .chat-msg.user {
+            background: var(--fg);
+            color: var(--bg);
+            align-self: flex-end;
+            border-right: 3px solid var(--fg);
+        }
+
+        .cat-input-area {
+            display: flex;
+            border-top: 2px solid var(--border);
+        }
+
+        .cat-input {
+            flex: 1;
+            background: var(--bg);
+            border: none;
+            padding: 8px 10px;
+            font-family: var(--font);
+            font-size: 0.8rem;
+            color: var(--fg);
+            outline: none;
+        }
+
+        .cat-send-btn {
+            background: var(--fg);
+            color: var(--bg);
+            border: none;
+            border-left: 2px solid var(--border);
+            padding: 8px 12px;
+            font-family: var(--font);
+            font-size: 0.8rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .cat-send-btn:hover {
+            background: var(--bg);
+            color: var(--fg);
+        }
+
+        .cat-quick-chips {
+            display: flex;
+            gap: 5px;
+            padding: 6px 10px;
+            overflow-x: auto;
+            border-top: 1px dashed var(--border);
+            background: var(--bg-alt);
+        }
+
+        .chip-btn {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            color: var(--fg);
+            font-family: var(--font);
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+
+        .chip-btn:hover {
+            background: var(--fg);
+            color: var(--bg);
+        }
+
+        /* --- Modal Overlay --- */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            z-index: 200;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--bg);
+            border: 3px solid var(--border);
+            padding: 30px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 8px 8px 0px var(--border);
+        }
+
+        .modal h2 {
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .input-group {
+            margin: 20px 0;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.85rem;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid var(--border);
+            background: var(--bg-alt);
+            font-family: var(--font);
+            font-size: 0.9rem;
+            color: var(--fg);
+            outline: none;
+        }
+
+        .action-btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--fg);
+            color: var(--bg);
+            border: 2px solid var(--border);
+            font-family: var(--font);
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: none;
+        }
+
+        .action-btn:hover {
+            background: var(--bg);
+            color: var(--fg);
+            transform: translate(-3px, -3px);
+            box-shadow: 3px 3px 0px var(--border);
+        }
+
+        footer {
+            border-top: 2px solid var(--border);
+            padding-top: 20px;
+            margin-top: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .btn-sm {
+            padding: 4px 8px;
+            border: 1px solid var(--border);
+            background: none;
+            color: var(--fg);
+            font-family: var(--font);
+            cursor: pointer;
+            font-size: 0.75rem;
+        }
+
+        .btn-sm:hover {
+            background: var(--fg);
+            color: var(--bg);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="wrapper">
+        
+        <!-- HEADER -->
+        <header>
+            <div class="brand-bar">
+                <div class="logo">
+                    M N M L S T <span>lab</span>
+                </div>
+                <div class="status-badge">
+                    <button class="top-toggle" id="theme-btn" onclick="toggleTheme()">[THEME: LIGHT]</button>
+                    <button class="top-toggle" id="audio-btn" onclick="toggleAudio()">[AUDIO: ON]</button>
+                    <span>[ SYS: ONLINE // AGENT: KITTY_OS ]</span>
+                </div>
+            </div>
+
+            <nav>
+                <button class="nav-btn active" onclick="switchView('home', this)">[00: HOME]</button>
+                <button class="nav-btn" onclick="switchView('hyper', this)">[01: HYPER]</button>
+                <button class="nav-btn" onclick="switchView('io', this)">[02: I/O]</button>
+                <button class="nav-btn" onclick="switchView('materials', this)">[03: MATERIALS]</button>
+                <button class="nav-btn" onclick="openModal()">[04: WAITLIST]</button>
+            </nav>
+        </header>
+
+        <!-- TERMINAL STATUS -->
+        <button class="term-toggle-btn" id="term-reopen-btn" onclick="toggleTerminal(true)">[+ OPEN TERMINAL CLI]</button>
+        <div class="terminal-box" id="term-box">
+            <div class="terminal-header">
+                <span>[ TERMINAL CLI v1.0.9 - ASK 'kitty [question]' OR TYPE 'help' ]</span>
+                <button class="btn-sm" onclick="closeTerminal()">[EXIT/CLOSE]</button>
+            </div>
+            <div class="terminal-output" id="term-output"></div>
+            <div class="terminal-input-line">
+                <span class="terminal-prompt">&gt;</span>
+                <input type="text" id="term-input" class="terminal-input" placeholder="type command or ask kitty..." autocomplete="off" spellcheck="false">
+            </div>
+        </div>
+
+        <!-- MAIN VIEWS -->
+        <main>
+            
+            <!-- HOME VIEW -->
+            <section id="home" class="view active">
+                <div class="division-banner">
+                    <h2>MNMLST ARCHITECTURE: DUAL DIVISION</h2>
+                    <p>
+                        MNMLST builds hardware from 100% recycled waste. We split our devices into two distinct visions: 
+                        <b>HYPER</b> for extreme digital detox, and <b>I/O</b> for intentional utility without distraction loops.
+                    </p>
+                </div>
+
+                <div class="grid grid-2">
+                    <div class="card" onclick="switchView('hyper', document.querySelectorAll('.nav-btn')[1])">
+                        <div class="card-tag">Division 01</div>
+                        <h2>m n m l s t : h y p e r</h2>
+                        <p>Extreme digital detox. Zero browser, zero feeds, zero fluff. Tactile mechanical T9 hardware, custom segmented E Ink display.</p>
+                        <div class="ascii-art">
+  +---------------+
+  |  HYPER : DETOX |
+  |  (SMS / VOICE)|
+  +---------------+
+  | [1]  [2]  [3] |
+  | [4]  [5]  [6] |
+  +---------------+</div>
+                        <ul class="spec-list">
+                            <li>Focus: Complete Screen Independence</li>
+                            <li>Form Factors: Flip Phone &amp; Low-Poly Watch</li>
+                            <li>Battery Life: Up to 3 Weeks</li>
+                        </ul>
+                    </div>
+
+                    <div class="card" onclick="switchView('io', document.querySelectorAll('.nav-btn')[2])">
+                        <div class="card-tag">Division 02</div>
+                        <h2>m n m l s t : i o</h2>
+                        <p>Input / Output. High-utility mobile tools. Wi-Fi hotspot, vector compass navigation, AI SMS summaries, and hot-swappable magnetic blocks.</p>
+                        <div class="ascii-art">
+  +---------------+
+  | I/O : MODULAR |
+  | [CAM] [WIFI]  |
+  +---------------+
+  | [MAPS] [AI]   |
+  +---------------+</div>
+                        <ul class="spec-list">
+                            <li>Focus: Essential Modern Utility</li>
+                            <li>Form Factors: Pro X (Thin) &amp; Pro Y (Chunky)</li>
+                            <li>Modular Mag-Rail Expansion System</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- HYPER VIEW -->
+            <section id="hyper" class="view">
+                <div class="division-banner">
+                    <h2>m n m l s t : h y p e r</h2>
+                    <p>
+                        Pure friction-free hardware. Designed for users who want to lock away distraction entirely. Physical keypads, frosted plastic cases, and zero app bloat.
+                    </p>
+                </div>
+
+                <div class="grid grid-2">
+                    <div class="card">
+                        <div class="card-tag">Hardware // 01-A</div>
+                        <h2>hyper : flip</h2>
+                        <p>Translucent flip chassis with a mechanical click hinge. Close the flip to physically kill cellular radio antennas.</p>
+                        <div class="ascii-art">
+  .-----------------.
+  |  E-INK DISPLAY  |
+  |  300 DPI MATRIX |
+  +-----------------+
+  | (1)  (2)   (3)  |
+  | (4)  (5)   (6)  |
+  '-----------------'</div>
+                        <ul class="spec-list">
+                            <li>3-Week Battery Life</li>
+                            <li>Tactile Keypad + High-Contrast E Ink</li>
+                            <li>Hard Disconnect Radio Switch</li>
+                            <li>Translucent Recycled HDPE Case</li>
+                        </ul>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-tag">Hardware // 01-B</div>
+                        <h2>hyper : watch</h2>
+                        <p>Low-poly faceted geometric watch. Uses a segmented zero-flash E Ink screen with instant capacitive touch and emergency SOS.</p>
+                        <div class="ascii-art">
+       / \
+     /     \
+   /  /\_/\  \
+  |  | 10:42|  |
+   \  \/_/   /
+     \     /
+       \ /</div>
+                        <ul class="spec-list">
+                            <li>Recycled Molded Aluminum Bezel</li>
+                            <li>Physical Emergency Beacon</li>
+                            <li>Zero-Flash Segmented Display</li>
+                            <li>14-Day Single Charge Endurance</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- I/O VIEW -->
+            <section id="io" class="view">
+                <div class="division-banner">
+                    <h2>m n m l s t : i o</h2>
+                    <p>
+                        Input &amp; Output. Built for professionals who need standard connectivity—Wi-Fi, 4G Hotspot, Vector Maps, and AI SMS summaries—without addictive feeds.
+                    </p>
+                </div>
+
+                <div class="grid grid-2">
+                    <div class="card">
+                        <div class="card-tag">Hardware // 02-A</div>
+                        <h2>io : pro x</h2>
+                        <p>Air-thin modular chassis (~4.5mm base). Designed for light everyday carry with ultra-responsive E Ink touch controls.</p>
+                        <div class="ascii-art">
+  +-----------------+
+  | [E-INK TOUCH]   |
+  |  - Compass Maps |
+  |  - VIP AI Text  |
+  +-----------------+
+  | [CAM]  [BATTERY]|
+  +-----------------+</div>
+                        <ul class="spec-list">
+                            <li>4G LTE + Wi-Fi Hotspot Bridge</li>
+                            <li>Vector Compass Navigation</li>
+                            <li>AI Text Summarizer (VIP Contacts)</li>
+                            <li>Mag-Rail Pogo Pin Module Interface</li>
+                        </ul>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-tag">Hardware // 02-B</div>
+                        <h2>io : pro y</h2>
+                        <p>Chunky, ergonomic industrial build. Accommodates multi-block stacks: extended battery, environmental sensors, and audio DACs.</p>
+                        <div class="ascii-art">
+  +-----------------+
+  | [PRO Y CHASSIS] |
+  | [E-INK TOUCH]   |
+  +-----------------+
+  | [CO2 SENSOR]    |
+  | [3000mAh BATT]  |
+  +-----------------+</div>
+                        <ul class="spec-list">
+                            <li>Substantial Recycled Frame</li>
+                            <li>Hot-Swappable Sensor Block</li>
+                            <li>Hi-Fi Audio DAC Output Block</li>
+                            <li>7 to 10 Days Battery under Wi-Fi</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- MATERIALS VIEW -->
+            <section id="materials" class="view">
+                <div class="division-banner">
+                    <h2>LAB PROCESS // 100% RECYCLED</h2>
+                    <p> Every MNMLST shell is constructed directly from landfill waste and reclaimed metal cans. No two devices are identical. </p>
+                </div>
+
+                <div class="mat-block">
+                    <h3>01 // LANDFILL HDPE / PP PLASTIC</h3>
+                    <p>Post-consumer bottle caps (#2 and #5) are shredded into 5mm flakes and compressed inside silicone molds at 175°C to create semi-translucent, frosted marble patterns.</p>
+                </div>
+
+                <div class="mat-block">
+                    <h3>02 // RECLAIMED ALUMINUM FRAMES</h3>
+                    <p>Discarded aluminum cans are melted inside home-lab foundries and sand-cast into structural side rails, protecting internal E Ink displays.</p>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- FOOTER -->
+        <footer>
+            <div> M N M L S T . lab // 2026 </div>
+            <div>
+                <button class="btn-sm" onclick="openModal()">RESERVE BATCH #001</button>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- RETRO ASCII CAT AGENT WINDOW (KITTY_OS) -->
+    <button class="cat-widget-toggle" id="cat-toggle-btn" onclick="toggleCatWindow()">[ ฅ^•ﻌ•^ฅ ASK KITTY_OS ]</button>
+    <div class="cat-agent-window hidden" id="cat-window">
+        <div class="cat-header">
+            <span>KITTY_OS v1.0 // MNML_AGENT</span>
+            <button class="cat-header-btn" onclick="toggleCatWindow()">[X]</button>
+        </div>
+        <div class="cat-display">
+            <div class="cat-ascii" id="cat-face">
+ /\_/\  
+( o.o ) 
+&gt; ^ &lt;  </div>
+            <div class="cat-status" id="cat-mood-text">MOOD: RESTING // READY FOR QUESTIONS</div>
+        </div>
+        <div class="cat-chat-history" id="cat-chat-history">
+            <div class="chat-msg cat">meow! I'm KITTY_OS. Ask me about MNMLST, hyper vs io, pricing, or recycled materials!</div>
+        </div>
+        <div class="cat-quick-chips">
+            <button class="chip-btn" onclick="askCat('What is hyper vs io?')">hyper vs io</button>
+            <button class="chip-btn" onclick="askCat('How much will it cost?')">price</button>
+            <button class="chip-btn" onclick="askCat('How are materials recycled?')">materials</button>
+            <button class="chip-btn" onclick="askCat('Purr for me')">purr</button>
+        </div>
+        <div class="cat-input-area">
+            <input type="text" class="cat-input" id="cat-user-input" placeholder="ask kitty something..." autocomplete="off" onkeydown="if(event.key==='Enter') sendCatMessage()">
+            <button class="cat-send-btn" onclick="sendCatMessage()">SEND</button>
+        </div>
+    </div>
+
+    <!-- WAITLIST MODAL -->
+    <div class="modal-overlay" id="waitlist-modal">
+        <div class="modal">
+            <h2>[ BATCH #001 WAITLIST ]</h2>
+            <p style="font-size: 0.85rem; margin-bottom: 15px;"> Reserve your spot for initial lab-assembled prototype drops. Select your architecture: </p>
+            <form onsubmit="handleWaitlist(event)">
+                <div class="input-group">
+                    <label>EMAIL ADDRESS</label>
+                    <input type="email" placeholder="founder@domain.com" required>
+                </div>
+                <div class="input-group">
+                    <label>PRIMARY ARCHITECTURE</label>
+                    <select>
+                        <option>m n m l s t : h y p e r (Flip Phone / Watch)</option>
+                        <option>m n m l s t : i o (Pro X / Pro Y Modular)</option>
+                        <option>BOTH / LAB DEVELOPER</option>
+                    </select>
+                </div>
+                <button type="submit" class="action-btn">SUBMIT RESERVATION</button>
+                <button type="button" class="btn-sm" style="margin-top: 10px; width: 100%; padding: 8px;" onclick="closeModal()">[ CANCEL / CLOSE ]</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- LOGIC -->
+    <script>
+        // --- Web Audio API Synth Engine ---
+        let audioCtx = null;
+        let soundEnabled = true;
+
+        // Ambient Background Music Variables
+        let ambientStarted = false;
+        let ambientMusicGain = null;
+        let ambientInterval = null;
+        let currentChordIndex = 0;
+
+        // Somber, C418 style overlapping chord progression
+        const somberChords = [
+            [146.83, 174.61, 220.00, 293.66], // Dm
+            [110.00, 130.81, 164.81, 220.00], // Am
+            [87.31, 130.81, 174.61, 220.00],  // F
+            [130.81, 164.81, 196.00, 261.63]  // C
+        ];
+
+        function initAudio() {
+            if (!audioCtx) {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                audioCtx = new AudioContext();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            
+            // Start ambient music on first valid user interaction
+            if (!ambientStarted && soundEnabled) {
+                ambientStarted = true;
+                startAmbientMusic();
+            }
+        }
+
+        // --- C418 Style Ambient Background Music Engine ---
+        function playAmbientChord() {
+            if (!soundEnabled || !audioCtx) return;
+            const now = audioCtx.currentTime;
+            const chord = somberChords[currentChordIndex];
+            currentChordIndex = (currentChordIndex + 1) % somberChords.length;
+
+            chord.forEach(freq => {
+                const osc = audioCtx.createOscillator();
+                const filter = audioCtx.createBiquadFilter();
+                const gain = audioCtx.createGain();
+
+                // Triangle wave creates a soft, string-like tone
+                osc.type = 'triangle';
+                osc.frequency.value = freq;
+
+                // Heavily muffle it for a distant, somber pad effect
+                filter.type = 'lowpass';
+                filter.frequency.value = 350; 
+
+                // Very slow, quiet swells (Attack: 5s, Decay/Release: 7s)
+                gain.gain.setValueAtTime(0.0001, now);
+                gain.gain.exponentialRampToValueAtTime(0.012, now + 5); 
+                gain.gain.exponentialRampToValueAtTime(0.0001, now + 12); 
+
+                osc.connect(filter);
+                filter.connect(gain);
+                gain.connect(ambientMusicGain);
+
+                osc.start(now);
+                osc.stop(now + 12); // Total length of chord swell
+            });
+        }
+
+        function startAmbientMusic() {
+            if (!ambientMusicGain) {
+                ambientMusicGain = audioCtx.createGain();
+                ambientMusicGain.gain.value = 0.8; 
+                ambientMusicGain.connect(audioCtx.destination);
+            }
+            
+            playAmbientChord();
+            // Schedule chords slightly overlapping (every 8 seconds for a 12-second chord swell)
+            ambientInterval = setInterval(playAmbientChord, 8000);
+        }
+
+        function stopAmbientMusic() {
+            if (ambientInterval) {
+                clearInterval(ambientInterval);
+                ambientInterval = null;
+            }
+            ambientStarted = false;
+        }
+
+        // --- UI Effects ---
+        function toggleAudio() {
+            soundEnabled = !soundEnabled;
+            const btn = document.getElementById('audio-btn');
+            btn.innerText = soundEnabled ? '[AUDIO: ON]' : '[AUDIO: OFF]';
+            
+            if (soundEnabled) {
+                initAudio();
+                playChirp();
+                if (!ambientStarted) {
+                    ambientStarted = true;
+                    startAmbientMusic();
+                }
+            } else {
+                stopAmbientMusic();
+            }
+        }
+
+        function toggleTheme() {
+            initAudio();
+            const body = document.body;
+            const currentTheme = body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            body.setAttribute('data-theme', newTheme);
+            
+            const btn = document.getElementById('theme-btn');
+            btn.innerText = newTheme === 'dark' ? '[THEME: DARK]' : '[THEME: LIGHT]';
+            
+            if (soundEnabled) {
+                const now = audioCtx.currentTime;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                if (newTheme === 'dark') {
+                    osc.frequency.setValueAtTime(300, now);
+                    osc.frequency.exponentialRampToValueAtTime(150, now + 0.15);
+                } else {
+                    osc.frequency.setValueAtTime(150, now);
+                    osc.frequency.exponentialRampToValueAtTime(300, now + 0.15);
+                }
+                gain.gain.setValueAtTime(0.05, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(now);
+                osc.stop(now + 0.15);
+            }
+            
+            addTerminalOutput(`theme_changed -> [ ${newTheme.toUpperCase()} MODE ]`);
+        }
+
+        function playClick() {
+            if (!soundEnabled) return;
+            initAudio();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(200, audioCtx.currentTime + 0.03);
+            gain.gain.setValueAtTime(0.02, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.03);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.03);
+        }
+
+        function playKeypress() {
+            if (!soundEnabled) return;
+            initAudio();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(1200 + Math.random() * 300, audioCtx.currentTime);
+            gain.gain.setValueAtTime(0.015, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.02);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.02);
+        }
+
+        function playChirp() {
+            if (!soundEnabled) return;
+            initAudio();
+            const now = audioCtx.currentTime;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(523.25, now);
+            osc.frequency.setValueAtTime(659.25, now + 0.04);
+            osc.frequency.setValueAtTime(783.99, now + 0.08);
+            osc.frequency.setValueAtTime(1046.50, now + 0.12);
+            gain.gain.setValueAtTime(0.02, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start(now);
+            osc.stop(now + 0.2);
+        }
+
+        function playMeowSound() {
+            if (!soundEnabled) return;
+            initAudio();
+            const now = audioCtx.currentTime;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(400, now);
+            osc.frequency.linearRampToValueAtTime(700, now + 0.1);
+            osc.frequency.linearRampToValueAtTime(300, now + 0.25);
+            gain.gain.setValueAtTime(0.03, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start(now);
+            osc.stop(now + 0.25);
+        }
+
+        function playPurrSound() {
+            if (!soundEnabled) return;
+            initAudio();
+            const now = audioCtx.currentTime;
+            for (let i = 0; i < 4; i++) {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(80 + Math.random() * 20, now + i * 0.08);
+                gain.gain.setValueAtTime(0.03, now + i * 0.08);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.08 + 0.06);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(now + i * 0.08);
+                osc.stop(now + i * 0.08 + 0.06);
+            }
+        }
+
+        // --- Navigation Router ---
+        function switchView(viewId, btnEl) {
+            playChirp();
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            const targetView = document.getElementById(viewId);
+            if (targetView) targetView.classList.add('active');
+
+            if (btnEl) {
+                document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                btnEl.classList.add('active');
+            } else {
+                const navIndex = { home: 0, hyper: 1, io: 2, materials: 3 }[viewId];
+                if (navIndex !== undefined) {
+                    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                    document.querySelectorAll('.nav-btn')[navIndex]?.classList.add('active');
+                }
+            }
+            addTerminalOutput(`view_switched -> [ ${viewId.toUpperCase()} ]`);
+        }
+
+        // --- Terminal System ---
+        const termOutput = document.getElementById('term-output');
+        const termInput = document.getElementById('term-input');
+        const termBox = document.getElementById('term-box');
+        const termReopenBtn = document.getElementById('term-reopen-btn');
+
+        const initialLogs = [
+            "sys_init: MNMLST lab CLI online...",
+            "agent_loaded: KITTY_OS v1.0 standing by...",
+            "segment_01: hyper (extreme detox // t9 & watch)",
+            "segment_02: io (input-output // wifi & maps & modular)",
+            "type 'help' or 'kitty [question]' to interact."
+        ];
+
+        let logIndex = 0;
+        let charIndex = 0;
+
+        function runTerminalBoot() {
+            if (logIndex < initialLogs.length) {
+                if (charIndex < initialLogs[logIndex].length) {
+                    let line = initialLogs[logIndex].substring(0, charIndex + 1);
+                    updateBootOutput(line);
+                    if (Math.random() > 0.4) playKeypress();
+                    charIndex++;
+                    setTimeout(runTerminalBoot, Math.random() * 12 + 8);
+                } else {
+                    commitBootLine(initialLogs[logIndex]);
+                    charIndex = 0;
+                    logIndex++;
+                    setTimeout(runTerminalBoot, 60);
+                }
+            } else {
+                playChirp();
+            }
+        }
+
+        let bootBuffer = "";
+        function updateBootOutput(currentLine) {
+            termOutput.innerHTML = bootBuffer + currentLine + '<span class="cursor"></span>';
+            termOutput.scrollTop = termOutput.scrollHeight;
+        }
+
+        function commitBootLine(line) {
+            bootBuffer += line + "<br>";
+            termOutput.innerHTML = bootBuffer;
+            termOutput.scrollTop = termOutput.scrollHeight;
+        }
+
+        function addTerminalOutput(text) {
+            const line = document.createElement('div');
+            line.innerHTML = text;
+            termOutput.appendChild(line);
+            termOutput.scrollTop = termOutput.scrollHeight;
+            bootBuffer = termOutput.innerHTML;
+        }
+
+        termInput.addEventListener('keydown', function(e) {
+            playKeypress();
+            if (e.key === 'Enter') {
+                const rawCmd = termInput.value.trim();
+                const cmd = rawCmd.toLowerCase();
+                termInput.value = '';
+
+                if (rawCmd === '') return;
+
+                addTerminalOutput(`<b>&gt; ${escapeHtml(rawCmd)}</b>`);
+
+                if (cmd.startsWith('kitty ') || cmd.startsWith('ask ')) {
+                    const q = rawCmd.replace(/^(kitty|ask)\s+/i, '');
+                    const reply = getKittyResponse(q);
+                    addTerminalOutput(`<b>[KITTY_OS]:</b> ${reply}`);
+                    return;
+                }
+
+                switch(cmd) {
+                    case 'whoami':
+                        playChirp();
+                        addTerminalOutput("a person escaping reality.");
+                        break;
+                    case 'kitty':
+                    case 'cat':
+                        toggleCatWindow(true);
+                        addTerminalOutput("KITTY_OS window opened.");
+                        break;
+                    case 'theme':
+                    case 'mode':
+                    case 'dark':
+                    case 'light':
+                        toggleTheme();
+                        break;
+                    case 'exit':
+                        playClick();
+                        closeTerminal();
+                        break;
+                    case 'hyper':
+                        switchView('hyper');
+                        addTerminalOutput("<b>HYPER DIVISION:</b> Extreme digital detox.");
+                        break;
+                    case 'io':
+                        switchView('io');
+                        addTerminalOutput("<b>I/O DIVISION:</b> Essential utilities with zero bloat.");
+                        break;
+                    case 'help':
+                        playChirp();
+                        addTerminalOutput(
+                            "COMMANDS:<br>" +
+                            "  <b>kitty [q]</b>  - ask KITTY_OS agent a question<br>" +
+                            "  <b>whoami</b>    - print user profile<br>" +
+                            "  <b>theme</b>     - toggle light/dark theme<br>" +
+                            "  <b>hyper/io</b>  - switch brand divisions<br>" +
+                            "  <b>specs</b>     - print hardware spec matrix<br>" +
+                            "  <b>waitlist</b>  - reserve batch #001<br>" +
+                            "  <b>clear</b>     - clear terminal<br>" +
+                            "  <b>exit</b>      - close terminal CLI"
+                        );
+                        break;
+                    case 'clear':
+                        playClick();
+                        termOutput.innerHTML = '';
+                        bootBuffer = '';
+                        break;
+                    case 'specs':
+                        playChirp();
+                        addTerminalOutput(
+                            "<b>--- MNMLST SPEC MATRIX ---</b><br>" +
+                            "[HYPER FLIP]  3-Wk Battery | T9 Tactile | HDPE Frame<br>" +
+                            "[HYPER WATCH] Segmented E-Ink | SOS Beacon | Recycled Alum<br>" +
+                            "[PRO X (IO)]  Air-Thin 4.5mm | 4G/Wi-Fi | Mag-Rail Pins<br>" +
+                            "[PRO Y (IO)]  Chunky 12mm    | Hi-Fi DAC | Sensor Block"
+                        );
+                        break;
+                    case 'waitlist':
+                        openModal();
+                        addTerminalOutput("Opening reservation popup window...");
+                        break;
+                    default:
+                        const autoReply = getKittyResponse(rawCmd);
+                        addTerminalOutput(`<b>[KITTY_OS]:</b> ${autoReply}`);
+                        break;
+                }
+            }
+        });
+
+        function closeTerminal() {
+            playClick();
+            termBox.style.display = 'none';
+            termReopenBtn.style.display = 'inline-block';
+        }
+
+        function toggleTerminal(show) {
+            playClick();
+            if (show) {
+                termBox.style.display = 'block';
+                termReopenBtn.style.display = 'none';
+                termInput.focus();
+            }
+        }
+
+        // --- KITTY_OS ASCII CAT AGENT ENGINE ---
+        const catFaces = {
+            RESTING: ` /\_/\  \n( o.o ) \n&gt; ^ &lt;  `,
+            THINKING: ` /\_/\  \n( -.- )* \n&gt; ~ &lt;  `,
+            HAPPY: ` /\_/\  \n( ^.^ ) \n&gt; u &lt;  `,
+            PURRING: ` /\_/\  \n( =x= )~ \n&gt; ♥ &lt;  `,
+            CURIOUS: ` /\_/\  \n( o.O ) \n&gt; ? &lt;  `,
+            SLEEPING: ` /\_/\  \n( u.u ) zZ\n&gt; v &lt;  `
+        };
+
+        function setCatMood(mood, statusText) {
+            const faceEl = document.getElementById('cat-face');
+            const moodEl = document.getElementById('cat-mood-text');
+            if (catFaces[mood]) {
+                faceEl.innerHTML = catFaces[mood];
+            }
+            moodEl.innerText = `MOOD: ${mood} // ${statusText}`;
+        }
+
+        function toggleCatWindow(forceOpen) {
+            playClick();
+            const win = document.getElementById('cat-window');
+            if (forceOpen || win.classList.contains('hidden')) {
+                win.classList.remove('hidden');
+                playMeowSound();
+                setCatMood('HAPPY', 'READY FOR QUESTIONS');
+            } else {
+                win.classList.add('hidden');
+            }
+        }
+
+        function askCat(questionText) {
+            document.getElementById('cat-user-input').value = questionText;
+            sendCatMessage();
+        }
+
+        function sendCatMessage() {
+            const inputEl = document.getElementById('cat-user-input');
+            const q = inputEl.value.trim();
+            if (!q) return;
+
+            inputEl.value = '';
+            addCatChatMessage(q, 'user');
+
+            setCatMood('THINKING', 'PROCESSING ANSWER...');
+            playKeypress();
+
+            setTimeout(() => {
+                const answer = getKittyResponse(q);
+                addCatChatMessage(answer, 'cat');
+                
+                if (q.toLowerCase().includes('purr') || q.toLowerCase().includes('love')) {
+                    setCatMood('PURRING', 'PURRING HAPPY');
+                    playPurrSound();
+                } else if (q.toLowerCase().includes('material') || q.toLowerCase().includes('recycle')) {
+                    setCatMood('CURIOUS', 'INSPECTING WASTE PLASTIC');
+                    playMeowSound();
+                } else {
+                    setCatMood('HAPPY', 'ANSWER DELIVERED');
+                    playMeowSound();
+                }
+            }, 300);
+        }
+
+        function addCatChatMessage(msg, sender) {
+            const history = document.getElementById('cat-chat-history');
+            const div = document.createElement('div');
+            div.className = `chat-msg ${sender}`;
+            div.innerText = msg;
+            history.appendChild(div);
+            history.scrollTop = history.scrollHeight;
+        }
+
+        function getKittyResponse(query) {
+            const q = query.toLowerCase();
+
+            if (q.includes('hyper') && q.includes('io')) {
+                return "HYPER is extreme detox (T9 flip phone, no browser, 3-wk battery). I/O is smart utility (Wi-Fi hotspot, maps, AI SMS summaries, modular blocks).";
+            }
+            if (q.includes('hyper')) {
+                return "m n m l s t : h y p e r is for pure digital detox! Features tactile T9 keys, E Ink screen, and an antenna kill switch.";
+            }
+            if (q.includes('io') || q.includes('i/o') || q.includes('pro')) {
+                return "m n m l s t : i o gives you Wi-Fi, 4G hotspot, vector compass maps, and AI text summaries without social media doomscrolling.";
+            }
+            if (q.includes('cost') || q.includes('price') || q.includes('how much') || q.includes('cheap')) {
+                return "Batch #001 targets ~$80 - $120 for HYPER devices and ~$150 - $190 for I/O modular units!";
+            }
+            if (q.includes('material') || q.includes('recycle') || q.includes('plastic') || q.includes('aluminum')) {
+                return "We melt #2/#5 landfill plastic caps at 175°C for frosted swirled shells and sand-cast discarded aluminum cans for rigid side rails!";
+            }
+            if (q.includes('detox') || q.includes('phone') || q.includes('screen') || q.includes('addict')) {
+                return "MNMLST strips away endless scroll feeds so you get your time and focus back. Less Noise. More Signal! meow!";
+            }
+            if (q.includes('purr') || q.includes('cute') || q.includes('cat') || q.includes('kitty')) {
+                return "prrrrr... ฅ^•ﻌ•^ฅ meow! I run on zero-waste kibble and raw E-Ink energy!";
+            }
+            if (q.includes('who are you') || q.includes('what is this')) {
+                return "I'm KITTY_OS, the retro AI assistant built directly into the MNMLST lab hub!";
+            }
+
+            return "Meow! MNMLST builds 100% recycled hardware split into HYPER (pure detox) and I/O (essential utility). Type 'specs' or ask about 'pricing'!";
+        }
+
+        function escapeHtml(str) {
+            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        }
+
+        function openModal() {
+            playChirp();
+            document.getElementById('waitlist-modal').classList.add('active');
+        }
+
+        function closeModal() {
+            playClick();
+            document.getElementById('waitlist-modal').classList.remove('active');
+        }
+
+        function handleWaitlist(e) {
+            e.preventDefault();
+            playChirp();
+            alert("RESERVATION CONFIRMED. Added to Lab Batch #001.");
+            closeModal();
+            addTerminalOutput("status: reservation recorded.");
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const clickables = document.querySelectorAll('.card, .nav-btn, .action-btn, .mat-block, .division-banner, .btn-sm');
+            clickables.forEach(el => {
+                el.addEventListener('click', initAudio);
+                el.addEventListener('mouseenter', () => playClick());
+            });
+            
+            // Also initialize audio if the user clicks anywhere on the body
+            document.body.addEventListener('click', initAudio, { once: true });
+        });
+
+        window.onload = () => {
+            setTimeout(runTerminalBoot, 200);
+        };
+    </script>
+</body>
+</html>
